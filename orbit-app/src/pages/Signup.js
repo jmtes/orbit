@@ -11,7 +11,7 @@ import FormError from './../components/FormError';
 import FormSuccess from './../components/FormSuccess';
 import logo from './../images/logo.png';
 import { publicFetch } from '../util/fetch';
-import { Redirect } from 'react-router';
+import { Redirect } from 'react-router-dom';
 
 const SignupSchema = Yup.object().shape({
   firstName: Yup.string().required('First name is required'),

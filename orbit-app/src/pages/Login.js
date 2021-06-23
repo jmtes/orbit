@@ -11,7 +11,7 @@ import GradientBar from './../components/common/GradientBar';
 import GradientButton from '../components/common/GradientButton';
 import logo from './../images/logo.png';
 import { publicFetch } from '../util/fetch';
-import { Redirect } from 'react-router';
+import { Redirect } from 'react-router-dom';
 
 const LoginSchema = Yup.object().shape({
   email: Yup.string().required('Email is required'),
