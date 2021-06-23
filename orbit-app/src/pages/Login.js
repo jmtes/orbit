@@ -10,10 +10,12 @@ import FormError from './../components/FormError';
 import GradientBar from './../components/common/GradientBar';
 import GradientButton from '../components/common/GradientButton';
 import logo from './../images/logo.png';
+import { publicFetch } from '../util/fetch';
+import { Redirect } from 'react-router';
 
 const LoginSchema = Yup.object().shape({
   email: Yup.string().required('Email is required'),
-  password: Yup.string().required('Password is required')
+  password: Yup.string().required('Password is required'),
 });
 
 const Login = () => {
@@ -21,9 +23,20 @@ const Login = () => {
   const [loginError, setLoginError] = useState();
   const [loginLoading, setLoginLoading] = useState(false);
 
+  const [redirectOnLogin, setRedirectOnLogin] = useState(false);
+
   const submitCredentials = async credentials => {
     try {
       setLoginLoading(true);
+      const { data } = await publicFetch.post('authenticate', credentials);
+
+      // Set login success message and clear login error if present
+      setLoginSuccess(data.message);
+      setLoginError('');
+
+      // Wait a little bit to give user time to read success message,
+      // then redirect to their dashboard
+      setTimeout(() => setRedirectOnLogin(true), 700);
     } catch (error) {
       setLoginLoading(false);
       const { data } = error.response;
@@ -34,6 +47,7 @@ const Login = () => {
 
   return (
     <>
+      {redirectOnLogin && <Redirect to="/dashboard" />}
       <section className="w-full sm:w-1/2 h-screen m-auto p-8 sm:pt-10">
         <GradientBar />
         <Card>
@@ -48,31 +62,22 @@ const Login = () => {
                 </h2>
                 <p className="text-gray-600 text-center">
                   Don't have an account?{' '}
-                  <Hyperlink
-                    to="signup"
-                    text="Sign up now"
-                  />
+                  <Hyperlink to="signup" text="Sign up now" />
                 </p>
               </div>
 
               <Formik
                 initialValues={{
                   email: '',
-                  password: ''
+                  password: '',
                 }}
-                onSubmit={values =>
-                  submitCredentials(values)
-                }
+                onSubmit={values => submitCredentials(values)}
                 validationSchema={LoginSchema}
               >
                 {() => (
                   <Form className="mt-8">
-                    {loginSuccess && (
-                      <FormSuccess text={loginSuccess} />
-                    )}
-                    {loginError && (
-                      <FormError text={loginError} />
-                    )}
+                    {loginSuccess && <FormSuccess text={loginSuccess} />}
+                    {loginError && <FormError text={loginError} />}
                     <div>
                       <div className="mb-2">
                         <div className="mb-1">
