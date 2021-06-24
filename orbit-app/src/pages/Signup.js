@@ -12,6 +12,7 @@ import FormSuccess from './../components/FormSuccess';
 import logo from './../images/logo.png';
 import { publicFetch } from '../util/fetch';
 import { Redirect } from 'react-router-dom';
+import { useAuth } from '../context/AuthContext';
 
 const SignupSchema = Yup.object().shape({
   firstName: Yup.string().required('First name is required'),
@@ -21,6 +22,8 @@ const SignupSchema = Yup.object().shape({
 });
 
 const Signup = () => {
+  const { setAuthState } = useAuth();
+
   const [signupSuccess, setSignupSuccess] = useState();
   const [signupError, setSignupError] = useState();
   const [loginLoading, setLoginLoading] = useState(false);
@@ -30,7 +33,9 @@ const Signup = () => {
   const submitCredentials = async credentials => {
     try {
       setLoginLoading(true);
+
       const { data } = await publicFetch.post('signup', credentials);
+      setAuthState(data);
 
       // Let user know that signup was successful and clear signup error
       // if present

@@ -12,6 +12,7 @@ import GradientButton from '../components/common/GradientButton';
 import logo from './../images/logo.png';
 import { publicFetch } from '../util/fetch';
 import { Redirect } from 'react-router-dom';
+import { useAuth } from '../context/AuthContext';
 
 const LoginSchema = Yup.object().shape({
   email: Yup.string().required('Email is required'),
@@ -19,6 +20,8 @@ const LoginSchema = Yup.object().shape({
 });
 
 const Login = () => {
+  const { setAuthState } = useAuth();
+
   const [loginSuccess, setLoginSuccess] = useState();
   const [loginError, setLoginError] = useState();
   const [loginLoading, setLoginLoading] = useState(false);
@@ -28,7 +31,9 @@ const Login = () => {
   const submitCredentials = async credentials => {
     try {
       setLoginLoading(true);
+
       const { data } = await publicFetch.post('authenticate', credentials);
+      setAuthState(data);
 
       // Set login success message and clear login error if present
       setLoginSuccess(data.message);
