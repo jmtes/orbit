@@ -3,26 +3,25 @@ import { Link } from 'react-router-dom';
 import GradientLink from '../components/common/GradientLink';
 import GradientBar from './../components/common/GradientBar';
 import logo from './../images/logo.png';
+import { useAuth } from '../context/AuthContext';
 
 const Home = () => {
+  const { isAuthenticated } = useAuth();
+
   return (
     <>
       <GradientBar />
       <div className="w-full top-0 bg-white px-10 py-5">
         <div className="flex justify-between">
-          <img
-            className="w-32 h-full"
-            src={logo}
-            alt="Logo"
-          />
+          <img className="w-32 h-full" src={logo} alt="Logo" />
           <div className="flex items-center">
-            <Link
-              to="/signup"
-              className="text-blue-700 mr-6"
-            >
+            <Link to="/signup" className="text-blue-700 mr-6">
               Sign Up
             </Link>
-            <GradientLink to={'/login'} text="Log In" />
+            <GradientLink
+              to={isAuthenticated() ? '/dashboard' : '/login'}
+              text="Log In"
+            />
           </div>
         </div>
       </div>
@@ -46,7 +45,7 @@ const Home = () => {
               <GradientLink
                 text="Get Started"
                 size="lg"
-                to={'/dashboard'}
+                to={isAuthenticated() ? '/dashboard' : '/signup'}
               />
             </div>
           </div>
