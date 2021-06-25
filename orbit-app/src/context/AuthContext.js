@@ -1,9 +1,11 @@
 import React, { createContext, useState, useContext } from 'react';
+import { useHistory } from 'react-router-dom';
 
 const AuthContext = createContext();
 const { Provider } = AuthContext;
 
 const AuthProvider = ({ children }) => {
+  const history = useHistory();
   const [authState, setAuthState] = useState(() => {
     const token = localStorage.getItem('token') || null;
     const expiresAt = localStorage.getItem('expiresAt') || null;
@@ -35,12 +37,26 @@ const AuthProvider = ({ children }) => {
     return new Date().getTime() / 1000 < authState.expiresAt;
   };
 
+  const logout = () => {
+    // Clear local storage
+    localStorage.removeItem('token');
+    localStorage.removeItem('expiresAt');
+    localStorage.removeItem('userInfo');
+
+    // Clear auth state
+    setAuthState({ token: null, expiresAt: null, userInfo: {} });
+
+    // Redirect to homepage
+    history.push('/');
+  };
+
   return (
     <Provider
       value={{
         authState,
         setAuthState: authInfo => setAuthInfo(authInfo),
         isAuthenticated,
+        logout,
       }}
     >
       {children}
