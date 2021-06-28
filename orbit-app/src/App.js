@@ -2,7 +2,8 @@ import React from 'react';
 import {
   BrowserRouter as Router,
   Route,
-  Switch
+  Switch,
+  Redirect,
 } from 'react-router-dom';
 import './App.css';
 import AppShell from './AppShell';
@@ -17,8 +18,11 @@ import Login from './pages/Login';
 import Settings from './pages/Settings';
 import Signup from './pages/Signup';
 import Users from './pages/Users';
+import { useAuth } from './context/AuthContext';
 
 const AppRoutes = () => {
+  const { isAuthenticated } = useAuth();
+
   return (
     <Switch>
       <Route path="/login">
@@ -30,11 +34,18 @@ const AppRoutes = () => {
       <Route exact path="/">
         <Home />
       </Route>
-      <Route path="/dashboard">
-        <AppShell>
-          <Dashboard />
-        </AppShell>
-      </Route>
+      <Route
+        path="/dashboard"
+        render={() =>
+          isAuthenticated() ? (
+            <AppShell>
+              <Dashboard />
+            </AppShell>
+          ) : (
+            <Redirect to="/" />
+          )
+        }
+      />
       <Route path="/inventory">
         <AppShell>
           <Inventory />
