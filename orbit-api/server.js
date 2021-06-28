@@ -116,7 +116,13 @@ app.post('/api/signup', async (req, res) => {
   }
 });
 
-app.get('/api/dashboard-data', (req, res) => res.json(dashboardData));
+const checkJwt = jwt({
+  secret: process.env.JWT_SECRET,
+  issuer: 'api.orbit',
+  audience: 'api.orbit',
+});
+
+app.get('/api/dashboard-data', checkJwt, (req, res) => res.json(dashboardData));
 
 app.patch('/api/user-role', async (req, res) => {
   try {
