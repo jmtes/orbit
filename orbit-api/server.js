@@ -122,6 +122,20 @@ const checkJwt = jwt({
   audience: 'api.orbit',
 });
 
+const attachUser = (req, res, next) => {
+  const token = req.headers.authorization;
+  if (!token) return res.status(401).json({ message: 'Invalid authorization' });
+
+  const decodedToken = jwtDecode(token.slice(7));
+
+  if (!decodedToken) {
+    return res.status(401).json({ message: 'Could not authorize request' });
+  } else {
+    req.user = decodedToken;
+    next();
+  }
+};
+
 app.get('/api/dashboard-data', checkJwt, (req, res) => res.json(dashboardData));
 
 app.patch('/api/user-role', async (req, res) => {
