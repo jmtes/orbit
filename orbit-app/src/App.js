@@ -55,8 +55,6 @@ const AdminRoute = ({ children, ...props }) => {
 };
 
 const AppRoutes = () => {
-  const { isAuthenticated } = useAuth();
-
   return (
     <Switch>
       <Route path="/login">
