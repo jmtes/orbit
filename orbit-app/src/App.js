@@ -20,6 +20,19 @@ import Signup from './pages/Signup';
 import Users from './pages/Users';
 import { useAuth } from './context/AuthContext';
 
+const AuthenticatedRoute = ({ children, ...props }) => {
+  const { isAuthenticated } = useAuth();
+
+  return (
+    <Route
+      {...props}
+      render={() =>
+        isAuthenticated() ? <AppShell>{children}</AppShell> : <Redirect to="" />
+      }
+    ></Route>
+  );
+};
+
 const AppRoutes = () => {
   const { isAuthenticated } = useAuth();
 
@@ -34,38 +47,21 @@ const AppRoutes = () => {
       <Route exact path="/">
         <Home />
       </Route>
-      <Route
-        path="/dashboard"
-        render={() =>
-          isAuthenticated() ? (
-            <AppShell>
-              <Dashboard />
-            </AppShell>
-          ) : (
-            <Redirect to="/" />
-          )
-        }
-      />
-      <Route path="/inventory">
-        <AppShell>
-          <Inventory />
-        </AppShell>
-      </Route>
-      <Route path="/account">
-        <AppShell>
-          <Account />
-        </AppShell>
-      </Route>
-      <Route path="/settings">
-        <AppShell>
-          <Settings />
-        </AppShell>
-      </Route>
-      <Route path="/users">
-        <AppShell>
-          <Users />
-        </AppShell>
-      </Route>
+      <AuthenticatedRoute path="/dashboard">
+        <Dashboard />
+      </AuthenticatedRoute>
+      <AuthenticatedRoute path="/inventory">
+        <Inventory />
+      </AuthenticatedRoute>
+      <AuthenticatedRoute path="/account">
+        <Account />
+      </AuthenticatedRoute>
+      <AuthenticatedRoute path="/settings">
+        <Settings />
+      </AuthenticatedRoute>
+      <AuthenticatedRoute path="/users">
+        <Users />
+      </AuthenticatedRoute>
       <Route path="*">
         <FourOFour />
       </Route>
