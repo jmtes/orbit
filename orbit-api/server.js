@@ -136,6 +136,8 @@ const attachUser = (req, res, next) => {
   }
 };
 
+app.use(attachUser);
+
 app.get('/api/dashboard-data', checkJwt, (req, res) => res.json(dashboardData));
 
 app.patch('/api/user-role', async (req, res) => {
