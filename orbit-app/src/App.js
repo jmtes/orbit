@@ -27,7 +27,28 @@ const AuthenticatedRoute = ({ children, ...props }) => {
     <Route
       {...props}
       render={() =>
-        isAuthenticated() ? <AppShell>{children}</AppShell> : <Redirect to="" />
+        isAuthenticated() ? (
+          <AppShell>{children}</AppShell>
+        ) : (
+          <Redirect to="/" />
+        )
+      }
+    ></Route>
+  );
+};
+
+const AdminRoute = ({ children, ...props }) => {
+  const { isAuthenticated, isAdmin } = useAuth();
+
+  return (
+    <Route
+      {...props}
+      render={() =>
+        isAuthenticated() && isAdmin() ? (
+          <AppShell>{children}</AppShell>
+        ) : (
+          <Redirect to="/" />
+        )
       }
     ></Route>
   );
@@ -50,18 +71,18 @@ const AppRoutes = () => {
       <AuthenticatedRoute path="/dashboard">
         <Dashboard />
       </AuthenticatedRoute>
-      <AuthenticatedRoute path="/inventory">
+      <AdminRoute path="/inventory">
         <Inventory />
-      </AuthenticatedRoute>
+      </AdminRoute>
       <AuthenticatedRoute path="/account">
         <Account />
       </AuthenticatedRoute>
       <AuthenticatedRoute path="/settings">
         <Settings />
       </AuthenticatedRoute>
-      <AuthenticatedRoute path="/users">
+      <AdminRoute path="/users">
         <Users />
-      </AuthenticatedRoute>
+      </AdminRoute>
       <Route path="*">
         <FourOFour />
       </Route>
