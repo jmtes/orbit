@@ -6,6 +6,7 @@ const jwtDecode = require('jwt-decode');
 const mongoose = require('mongoose');
 const jwt = require('express-jwt');
 const cookieParser = require('cookie-parser');
+const csrf = require('csrf');
 const dashboardData = require('./data/dashboard');
 const User = require('./data/User');
 const InventoryItem = require('./data/InventoryItem');
@@ -122,6 +123,11 @@ app.post('/api/signup', async (req, res) => {
   }
 });
 
+const csrfProtection = csrf({
+  cookie: true,
+});
+app.use(csrfProtection);
+
 const checkJwt = jwt({
   secret: process.env.JWT_SECRET,
   issuer: 'api.orbit',
@@ -154,6 +160,8 @@ const requireAdmin = (req, res, next) => {
 
   next();
 };
+
+app.get('/api/csrf-token', req => res.json({ csrfToken: req.csrfToken() }));
 
 app.get('/api/dashboard-data', checkJwt, (req, res) => res.json(dashboardData));
 
