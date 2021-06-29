@@ -6,7 +6,7 @@ const jwtDecode = require('jwt-decode');
 const mongoose = require('mongoose');
 const jwt = require('express-jwt');
 const cookieParser = require('cookie-parser');
-const csrf = require('csrf');
+const csrf = require('csurf');
 const dashboardData = require('./data/dashboard');
 const User = require('./data/User');
 const InventoryItem = require('./data/InventoryItem');
@@ -161,7 +161,9 @@ const requireAdmin = (req, res, next) => {
   next();
 };
 
-app.get('/api/csrf-token', req => res.json({ csrfToken: req.csrfToken() }));
+app.get('/api/csrf-token', (req, res) =>
+  res.json({ csrfToken: req.csrfToken() })
+);
 
 app.get('/api/dashboard-data', checkJwt, (req, res) => res.json(dashboardData));
 
