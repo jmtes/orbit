@@ -5,6 +5,7 @@ const cors = require('cors');
 const jwtDecode = require('jwt-decode');
 const mongoose = require('mongoose');
 const jwt = require('express-jwt');
+const cookieParser = require('cookie-parser');
 const dashboardData = require('./data/dashboard');
 const User = require('./data/User');
 const InventoryItem = require('./data/InventoryItem');
@@ -16,6 +17,7 @@ const app = express();
 app.use(cors());
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
+app.use(cookieParser());
 
 app.post('/api/authenticate', async (req, res) => {
   try {
