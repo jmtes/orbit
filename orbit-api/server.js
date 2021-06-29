@@ -126,6 +126,7 @@ const checkJwt = jwt({
   secret: process.env.JWT_SECRET,
   issuer: 'api.orbit',
   audience: 'api.orbit',
+  getToken: req => req.cookies.token,
 });
 app.use(checkJwt);
 
