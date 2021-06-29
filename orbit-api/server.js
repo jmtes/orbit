@@ -130,10 +130,10 @@ const checkJwt = jwt({
 app.use(checkJwt);
 
 const attachUser = (req, res, next) => {
-  const token = req.headers.authorization;
+  const token = req.cookies.token;
   if (!token) return res.status(401).json({ message: 'Invalid authorization' });
 
-  const decodedToken = jwtDecode(token.slice(7));
+  const decodedToken = jwtDecode(token);
 
   if (!decodedToken) {
     return res.status(401).json({ message: 'Could not authorize request' });
